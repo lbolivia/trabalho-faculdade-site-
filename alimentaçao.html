@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alimentação Saudável — Escolhas Conscientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7EE;
+    --surface:#FFFFFF;
+    --ink:#21301F;
+    --ink-soft:#5B6857;
+    --primary:#2E6E4E;
+    --primary-dark:#1F4D36;
+    --accent:#E2572B;
+    --accent-2:#D9A441;
+    --line:#DCD3BC;
+    --bad:#C4432E;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    color:var(--primary-dark);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- Layout shells ---------- */
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  header.top{
+    background:var(--primary-dark);
+    padding:56px 0 0 0;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top .wrap{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:32px;
+    align-items:end;
+    position:relative;
+    z-index:2;
+  }
+  .eyebrow-plain{
+    color:var(--accent-2);
+    font-size:15px;
+    margin-bottom:10px;
+    font-weight:500;
+  }
+  header.top h1{
+    color:#FBF7EE;
+    font-size:clamp(34px,5vw,52px);
+    line-height:1.05;
+    font-weight:600;
+  }
+  header.top p{
+    color:#CFE0D3;
+    max-width:46ch;
+    margin-top:16px;
+    font-size:17px;
+  }
+  .hero-plate{width:100%;max-width:280px;justify-self:end;}
+
+  nav.tabs{
+    background:var(--primary-dark);
+    padding-top:36px;
+  }
+  nav.tabs .wrap{
+    display:flex;
+    gap:6px;
+    border-top:1px solid rgba(255,255,255,0.15);
+    padding-top:0;
+  }
+  nav.tabs button{
+    background:none;
+    border:none;
+    color:#B9CBBB;
+    font-family:'Work Sans',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    padding:16px 18px 14px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  nav.tabs button:hover{color:#fff;}
+  nav.tabs button.active{
+    color:#fff;
+    border-bottom-color:var(--accent);
+  }
+  nav.tabs button:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px;}
+
+  main{padding:44px 0 90px;}
+  section.panel{display:none;}
+  section.panel.active{display:block;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .section-head{margin-bottom:28px;}
+  .section-head h2{font-size:30px;font-weight:600;}
+  .section-head p{color:var(--ink-soft);margin-top:8px;max-width:56ch;}
+
+  /* ---------- Montar Prato ---------- */
+  .builder-layout{
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:32px;
+    align-items:start;
+  }
+  .category-block{
+    margin-bottom:30px;
+    border-top:1px solid var(--line);
+    padding-top:20px;
+  }
+  .category-block h3{
+    font-size:13px;
+    text-transform:none;
+    color:var(--ink-soft);
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  .option-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:10px;
+  }
+  .opt{
+    background:var(--surface);
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:12px 10px;
+    text-align:left;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Work Sans',sans-serif;
+    font-size:13.5px;
+    color:var(--ink);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt svg{width:28px;height:28px;flex-shrink:0;}
+  .opt:hover{border-color:var(--primary);}
+  .opt.selected{
+    border-color:var(--primary);
+    background:#EFF6EE;
+    box-shadow:inset 0 0 0 1px var(--primary);
+  }
+  .opt:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px;}
+
+  .score-side{
+    position:sticky;
+    top:20px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px;
+  }
+  .score-side h3{font-size:15px;color:var(--ink-soft);font-weight:600;margin-bottom:4px;}
+  .score-num{font-family:'Fraunces',serif;font-size:44px;color:var(--primary-dark);font-weight:600;}
+  .score-max{color:var(--ink-soft);font-size:15px;}
+  .meter{
+    height:8px;background:#EDE7D6;border-radius:6px;overflow:hidden;margin:14px 0 16px;
+  }
+  .meter-fill{
+    height:100%;background:var(--accent);border-radius:6px;
+    width:0%;transition:width .3s ease;
+  }
+  .verdict{
+    font-size:14px;
+    padding:12px 14px;
+    border-radius:8px;
+    background:#F3EEDD;
+    color:var(--ink-soft);
+    min-height:20px;
+  }
+  .verdict.excelente{background:#E4F1E6;color:var(--primary-dark);}
+  .verdict.bom{background:#FBF0DB;color:#8A5E12;}
+  .verdict.atencao{background:#FBE7E2;color:var(--bad);}
+  .reset-btn{
+    margin-top:14px;
+    width:100%;
+    background:none;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px;
+    font-family:'Work Sans',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .reset-btn:hover{border-color:var(--primary);color:var(--primary-dark);}
+
+  /* ---------- Dicas ---------- */
+  .tips-list{list-style:none;margin:0;padding:0;display:grid;gap:2px;}
+  .tips-list li{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    padding:18px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .tips-list li:first-child{border-top:1px solid var(--line);}
+  .tip-icon{width:26px;height:26px;flex-shrink:0;margin-top:2px;color:var(--primary);}
+  .tips-list p{margin:0;font-size:16px;}
+
+  /* ---------- Quiz ---------- */
+  .quiz-progress{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .quiz-progress .bar{
+    flex:1;height:5px;background:#EDE7D6;border-radius:4px;margin:0 14px;overflow:hidden;
+  }
+  .quiz-progress .bar-fill{height:100%;background:var(--primary);width:0%;transition:width .25s ease;}
+  .quiz-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px;
+  }
+  .quiz-card h3{font-size:21px;font-weight:600;margin-bottom:22px;line-height:1.3;}
+  .quiz-options{display:grid;gap:10px;}
+  .qopt{
+    text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;
+    padding:14px 16px;font-family:'Work Sans',sans-serif;font-size:15px;color:var(--ink);
+    cursor:pointer;transition:border-color .15s ease;
+  }
+  .qopt:hover{border-color:var(--primary);}
+  .qopt:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px;}
+  .qopt.correct{border-color:var(--primary);background:#E4F1E6;color:var(--primary-dark);font-weight:600;}
+  .qopt.wrong{border-color:var(--bad);background:#FBE7E2;color:var(--bad);font-weight:600;}
+  .qopt[disabled]{cursor:default;}
+  .feedback{margin-top:18px;font-size:14.5px;color:var(--ink-soft);min-height:20px;}
+  .quiz-next{
+    margin-top:22px;background:var(--primary-dark);color:#fff;border:none;border-radius:8px;
+    padding:12px 22px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;
+    cursor:pointer;display:none;
+  }
+  .quiz-next:hover{background:var(--primary);}
+  .quiz-result{text-align:center;padding:20px 0;}
+  .quiz-result .score-num{font-size:56px;}
+  .quiz-result p.msg{font-size:17px;max-width:44ch;margin:18px auto 0;color:var(--ink-soft);}
+  .quiz-result .quiz-next{display:inline-block;margin-top:26px;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 0 60px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13px;
+  }
+
+  @media (max-width:720px){
+    header.top .wrap{grid-template-columns:1fr;}
+    .hero-plate{display:none;}
+    .builder-layout{grid-template-columns:1fr;}
+    .score-side{position:static;}
+    nav.tabs .wrap{overflow-x:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow-plain">Um guia interativo</div>
+      <h1>Alimentação saudável começa com escolhas conscientes</h1>
+      <p>Monte seu prato, descubra dicas práticas e teste o que você sabe sobre nutrição — tudo em um só lugar.</p>
+    </div>
+    <svg class="hero-plate" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="100" cy="100" r="92" fill="#F6F0DE"/>
+      <circle cx="100" cy="100" r="70" fill="#FBF7EE"/>
+      <path d="M100 30 A70 70 0 0 1 160 130 L100 100 Z" fill="#2E6E4E"/>
+      <path d="M160 130 A70 70 0 0 1 55 165 L100 100 Z" fill="#D9A441"/>
+      <path d="M55 165 A70 70 0 0 1 40 78 L100 100 Z" fill="#E2572B" opacity="0.85"/>
+      <path d="M40 78 A70 70 0 0 1 100 30 L100 100 Z" fill="#6FA97F"/>
+      <circle cx="100" cy="100" r="10" fill="#FBF7EE"/>
+    </svg>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-panel="prato" class="active" type="button">Montar prato</button>
+    <button data-panel="dicas" type="button">Dicas</button>
+    <button data-panel="quiz" type="button">Quiz</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ===================== MONTAR PRATO ===================== -->
+  <section id="panel-prato" class="panel active">
+    <div class="section-head">
+      <h2>Monte o seu prato</h2>
+      <p>Escolha um item em cada categoria e veja, em tempo real, como suas combinações pontuam.</p>
+    </div>
+
+    <div class="builder-layout">
+      <div id="categories"></div>
+
+      <aside class="score-side">
+        <h3>Pontuação</h3>
+        <div><span class="score-num" id="scoreNum">0</span><span class="score-max"> / 8</span></div>
+        <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+        <div class="verdict" id="verdict">Escolha os itens do seu prato para ver o resultado.</div>
+        <button class="reset-btn" id="resetPrato" type="button">Recomeçar prato</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== DICAS ===================== -->
+  <section id="panel-dicas" class="panel">
+    <div class="section-head">
+      <h2>Dicas de alimentação saudável</h2>
+      <p>Pequenos hábitos, repetidos com consistência, fazem toda a diferença.</p>
+    </div>
+    <ul class="tips-list" id="tipsList"></ul>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section id="panel-quiz" class="panel">
+    <div class="section-head">
+      <h2>Quiz educativo</h2>
+      <p>Cinco perguntas para testar o que você sabe sobre nutrição.</p>
+    </div>
+
+    <div id="quizArea"></div>
+  </section>
+
+</main>
+
+<footer>Alimentação Saudável — Escolhas Conscientes</footer>
+
+<script>
+/* ============ TAB NAVIGATION ============ */
+const tabButtons = document.querySelectorAll('nav.tabs button');
+const panels = document.querySelectorAll('.panel');
+tabButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabButtons.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ============ ICONS ============ */
+const ICONS = {
+  frango: `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="24" rx="13" ry="10" fill="#D9A441"/><path d="M14 16 q6 -10 12 0" stroke="#8A5E12" stroke-width="2" fill="none"/><circle cx="16" cy="15" r="1.6" fill="#5B3A00"/></svg>`,
+  ovo: `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="9" fill="#F3F3EA"/><circle cx="20" cy="22" r="6" fill="#E2A72B"/></svg>`,
+  feijao: `<svg viewBox="0 0 40 40"><ellipse cx="15" cy="17" rx="6" ry="4" fill="#8A3B2A" transform="rotate(-20 15 17)"/><ellipse cx="24" cy="15" rx="6" ry="4" fill="#A5432E" transform="rotate(10 24 15)"/><ellipse cx="19" cy="24" rx="6" ry="4" fill="#8A3B2A" transform="rotate(-5 19 24)"/><ellipse cx="27" cy="25" rx="6" ry="4" fill="#A5432E" transform="rotate(25 27 25)"/></svg>`,
+  empanada: `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="8" fill="#C77B2E"/><ellipse cx="20" cy="22" rx="14" ry="8" fill="none" stroke="#8A5212" stroke-width="1.5" stroke-dasharray="2 3"/></svg>`,
+  salsicha: `<svg viewBox="0 0 40 40"><rect x="8" y="17" width="24" height="9" rx="4.5" fill="#B84A3E"/><rect x="8" y="17" width="24" height="9" rx="4.5" fill="none" stroke="#7C2A20" stroke-width="1"/></svg>`,
+  arrozintegral: `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="14" ry="7" fill="#B98A4E"/><g fill="#8A6431"><ellipse cx="14" cy="21" rx="2" ry="1"/><ellipse cx="20" cy="19" rx="2" ry="1"/><ellipse cx="26" cy="22" rx="2" ry="1"/><ellipse cx="17" cy="25" rx="2" ry="1"/><ellipse cx="24" cy="26" rx="2" ry="1"/></g></svg>`,
+  arrozbranco: `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="14" ry="7" fill="#F5F1E4"/><g fill="#E1DAC3"><ellipse cx="14" cy="21" rx="2" ry="1"/><ellipse cx="20" cy="19" rx="2" ry="1"/><ellipse cx="26" cy="22" rx="2" ry="1"/></g></svg>`,
+  batatafrita: `<svg viewBox="0 0 40 40"><rect x="12" y="10" width="4" height="20" rx="1.5" fill="#E8B93D"/><rect x="18" y="8" width="4" height="22" rx="1.5" fill="#E8B93D"/><rect x="24" y="12" width="4" height="18" rx="1.5" fill="#E8B93D"/></svg>`,
+  macarraointegral: `<svg viewBox="0 0 40 40"><path d="M8 15 q4 6 0 10 q-4 6 0 10" stroke="#B98A4E" stroke-width="2.4" fill="none"/><path d="M16 13 q4 6 0 10 q-4 6 0 10" stroke="#B98A4E" stroke-width="2.4" fill="none"/><path d="M24 15 q4 6 0 10 q-4 6 0 10" stroke="#B98A4E" stroke-width="2.4" fill="none"/><path d="M31 13 q4 6 0 10 q-4 6 0 10" stroke="#B98A4E" stroke-width="2.4" fill="none"/></svg>`,
+  paobranco: `<svg viewBox="0 0 40 40"><rect x="7" y="14" width="26" height="14" rx="7" fill="#EAD9B0"/><rect x="7" y="14" width="26" height="6" rx="3" fill="#F3E7C8"/></svg>`,
+  salada: `<svg viewBox="0 0 40 40"><path d="M20 30 C10 30 8 20 12 14 C16 8 24 8 28 14 C32 20 30 30 20 30 Z" fill="#4C8A57"/><path d="M20 30 C15 30 13 24 16 19" stroke="#356B3F" stroke-width="1.5" fill="none"/></svg>`,
+  legumes: `<svg viewBox="0 0 40 40"><circle cx="14" cy="22" r="6" fill="#E2622B"/><rect x="21" y="16" width="7" height="12" rx="3" fill="#4C8A57"/><circle cx="27" cy="14" r="4" fill="#D9A441"/></svg>`,
+  nenhumveg: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13" fill="none" stroke="#C7BEA3" stroke-width="2"/><line x1="11" y1="11" x2="29" y2="29" stroke="#C7BEA3" stroke-width="2"/></svg>`,
+  agua: `<svg viewBox="0 0 40 40"><path d="M20 8 C14 18 9 23 9 28 a11 11 0 0 0 22 0 C31 23 26 18 20 8 Z" fill="#6FB6D9"/></svg>`,
+  suconatural: `<svg viewBox="0 0 40 40"><path d="M13 12 h14 l-2 18 h-10 z" fill="#E2622B"/><rect x="13" y="12" width="14" height="3" fill="#F3B14D"/></svg>`,
+  refrigerante: `<svg viewBox="0 0 40 40"><path d="M15 10 h10 l-1 6 2 3 v10 a1 1 0 0 1 -1 1 h-10 a1 1 0 0 1 -1 -1 v-10 l2 -3 z" fill="#A5432E"/><rect x="14" y="9" width="12" height="3" rx="1" fill="#7C2A20"/></svg>`,
+  sucoartificial: `<svg viewBox="0 0 40 40"><rect x="11" y="10" width="18" height="18" rx="3" fill="#D9A441"/><rect x="11" y="10" width="18" height="6" rx="3" fill="#E8C169"/></svg>`,
+};
+
+/* ============ MONTAR PRATO DATA (matches original scoring) ============ */
+const categorias = [
+  { nome:'Proteína', key:'proteina', itens:[
+    {n:'Frango grelhado', p:2, icon:'frango'},
+    {n:'Ovo cozido', p:2, icon:'ovo'},
+    {n:'Feijão', p:2, icon:'feijao'},
+    {n:'Carne empanada frita', p:0, icon:'empanada'},
+    {n:'Salsicha / linguiça', p:0, icon:'salsicha'},
+  ]},
+  { nome:'Carboidrato', key:'carbo', itens:[
+    {n:'Arroz integral', p:2, icon:'arrozintegral'},
+    {n:'Arroz branco', p:1, icon:'arrozbranco'},
+    {n:'Batata frita', p:0, icon:'batatafrita'},
+    {n:'Macarrão integral', p:2, icon:'macarraointegral'},
+    {n:'Pão branco', p:0, icon:'paobranco'},
+  ]},
+  { nome:'Vegetal', key:'vegetal', itens:[
+    {n:'Salada verde', p:2, icon:'salada'},
+    {n:'Legumes no vapor', p:2, icon:'legumes'},
+    {n:'Nenhum vegetal', p:0, icon:'nenhumveg'},
+  ]},
+  { nome:'Bebida', key:'bebida', itens:[
+    {n:'Água', p:2, icon:'agua'},
+    {n:'Suco natural sem açúcar', p:2, icon:'suconatural'},
+    {n:'Refrigerante', p:0, icon:'refrigerante'},
+    {n:'Suco em pó / artificial', p:0, icon:'sucoartificial'},
+  ]},
+];
+
+const escolhas = {};
+
+function renderCategorias(){
+  const wrap = document.getElementById('categories');
+  wrap.innerHTML = categorias.map(cat=>`
+    <div class="category-block">
+      <h3>${cat.nome}</h3>
+      <div class="option-grid">
+        ${cat.itens.map((item,i)=>`
+          <button class="opt" data-cat="${cat.key}" data-idx="${i}" type="button">
+            ${ICONS[item.icon]}
+            <span>${item.n}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  wrap.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const cat = btn.dataset.cat;
+      const idx = Number(btn.dataset.idx);
+      escolhas[cat] = idx;
+      wrap.querySelectorAll(`.opt[data-cat="${cat}"]`).forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      atualizarPontuacao();
+    });
+  });
+}
+
+function atualizarPontuacao(){
+  let total = 0;
+  categorias.forEach(cat=>{
+    if (escolhas[cat.key] !== undefined){
+      total += cat.itens[escolhas[cat.key]].p;
+    }
+  });
+  document.getElementById('scoreNum').textContent = total;
+  document.getElementById('meterFill').style.width = (total/8*100)+'%';
+
+  const verdictEl = document.getElementById('verdict');
+  const todasEscolhidas = categorias.every(cat => escolhas[cat.key] !== undefined);
+
+  if (!todasEscolhidas){
+    verdictEl.className = 'verdict';
+    verdictEl.textContent = 'Escolha um item em cada categoria para ver o resultado completo.';
+    return;
+  }
+  if (total >= 7){
+    verdictEl.className = 'verdict excelente';
+    verdictEl.textContent = 'Excelente! Seu prato está muito equilibrado e saudável.';
+  } else if (total >= 4){
+    verdictEl.className = 'verdict bom';
+    verdictEl.textContent = 'Bom! Seu prato tem boas escolhas, mas ainda pode melhorar.';
+  } else {
+    verdictEl.className = 'verdict atencao';
+    verdictEl.textContent = 'Atenção! Tente incluir mais itens naturais e menos processados.';
+  }
+}
+
+document.getElementById('resetPrato').addEventListener('click', ()=>{
+  Object.keys(escolhas).forEach(k=>delete escolhas[k]);
+  document.querySelectorAll('.opt.selected').forEach(b=>b.classList.remove('selected'));
+  atualizarPontuacao();
+});
+
+renderCategorias();
+atualizarPontuacao();
+
+/* ============ DICAS ============ */
+const dicas = [
+  'Beba bastante água durante o dia, evitando refrigerantes.',
+  'Prefira alimentos naturais a alimentos ultraprocessados.',
+  'Inclua frutas e vegetais em pelo menos duas refeições por dia.',
+  'Evite pular refeições, principalmente o café da manhã.',
+  'Modere o consumo de açúcar e frituras.',
+  'Preste atenção nos rótulos dos alimentos antes de comprar.',
+  'Coma devagar e preste atenção aos sinais de fome e saciedade.',
+];
+const tipIcon = `<svg class="tip-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#E4F1E6"/><path d="M8 12.5 l2.5 2.5 5.5 -6" stroke="#2E6E4E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+document.getElementById('tipsList').innerHTML = dicas.map(d=>`<li>${tipIcon}<p>${d}</p></li>`).join('');
+
+/* ============ QUIZ ============ */
+const perguntas = [
+  { q:'Qual desses alimentos é considerado ultraprocessado?',
+    op:['Maçã','Salgadinho de pacote','Feijão','Ovo'], correta:1 },
+  { q:'Qual é a bebida mais recomendada para se manter hidratado?',
+    op:['Refrigerante','Água','Suco artificial','Energético'], correta:1 },
+  { q:'Qual desses grupos alimentares fornece mais fibras?',
+    op:['Frituras','Doces','Vegetais e frutas','Refrigerantes'], correta:2 },
+  { q:'Pular refeições faz bem para a saúde?',
+    op:['Sim, sempre','Não, o ideal é manter uma rotina alimentar','Sim, se for à noite','Não tem importância'], correta:1 },
+  { q:'O que é importante verificar antes de comprar um alimento industrializado?',
+    op:['A cor da embalagem','O rótulo com ingredientes e nutrientes','O preço apenas','A marca apenas'], correta:1 },
+];
+
+let quizIdx = 0;
+let quizAcertos = 0;
+let respondida = false;
+
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+
+  if (quizIdx >= perguntas.length){
+    const pct = Math.round(quizAcertos/perguntas.length*100);
+    let msg;
+    if (pct >= 80) msg = 'Parabéns! Você entende muito bem sobre alimentação saudável.';
+    else if (pct >= 50) msg = 'Bom trabalho! Mas ainda há espaço para aprender mais sobre o tema.';
+    else msg = 'Vale a pena estudar mais sobre alimentação saudável. Tente novamente!';
+
+    area.innerHTML = `
+      <div class="quiz-card quiz-result">
+        <h3>Resultado final</h3>
+        <div class="score-num">${quizAcertos}<span class="score-max"> / ${perguntas.length}</span></div>
+        <p class="msg">${msg}</p>
+        <button class="quiz-next" id="restartQuiz" type="button">Refazer o quiz</button>
+      </div>
+    `;
+    document.getElementById('restartQuiz').addEventListener('click', ()=>{
+      quizIdx = 0; quizAcertos = 0; respondida = false; renderQuiz();
+    });
+    return;
+  }
+
+  const p = perguntas[quizIdx];
+  respondida = false;
+
+  area.innerHTML = `
+    <div class="quiz-progress">
+      <span>Pergunta ${quizIdx+1} de ${perguntas.length}</span>
+      <div class="bar"><div class="bar-fill" style="width:${(quizIdx/perguntas.length*100)}%"></div></div>
+      <span>${quizAcertos} acertos</span>
+    </div>
+    <div class="quiz-card">
+      <h3>${p.q}</h3>
+      <div class="quiz-options">
+        ${p.op.map((o,i)=>`<button class="qopt" data-idx="${i}" type="button">${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="quizFeedback"></div>
+      <button class="quiz-next" id="quizNextBtn" type="button">Próxima pergunta</button>
+    </div>
+  `;
+
+  const opts = area.querySelectorAll('.qopt');
+  opts.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if (respondida) return;
+      respondida = true;
+      const idx = Number(btn.dataset.idx);
+      opts.forEach(b=>b.disabled = true);
+
+      if (idx === p.correta){
+        btn.classList.add('correct');
+        quizAcertos++;
+        document.getElementById('quizFeedback').textContent = 'Resposta correta!';
+      } else {
+        btn.classList.add('wrong');
+        opts[p.correta].classList.add('correct');
+        document.getElementById('quizFeedback').textContent = 'Resposta errada. A correta era: ' + p.op[p.correta];
+      }
+      document.getElementById('quizNextBtn').style.display = 'inline-block';
+    });
+  });
+
+  document.getElementById('quizNextBtn').addEventListener('click', ()=>{
+    quizIdx++;
+    renderQuiz();
+  });
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
